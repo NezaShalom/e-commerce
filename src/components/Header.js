@@ -6,9 +6,14 @@ import {
     ShoppingCartIcon,
   } from '@heroicons/react/outline';
 import React from 'react'
-import {signIn, signOut, useSession } from "next-auth/react"
+import { signOut ,signIn, useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 
 function Header() {
+  //Check if u logged in
+  const { data: session } = useSession();
+  //make stacks of pages- top of another page(good redirect)
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-3 md:px-10">
@@ -16,7 +21,7 @@ function Header() {
     <div
       className="izina relative flex items-center h-10 cursor-pointer my-auto"
     >
-        <a href="/" className="logo">
+        <a onClick={() => router.push('/')} className="logo">
           <span className="grey-color"> &lt;</span>
           <span className="logo-name">Cagura</span>
           <span className="grey-color">/&gt;</span>
@@ -35,13 +40,14 @@ function Header() {
 
 
         <div className='text-black flex items-center justify-end space-x-4 text-gray5600'>
-          <div onClick={signIn} className='cursor-pointer link'>
-            <p>Hello</p>
+          <div onClick={!session ? signIn : signOut} className='cursor-pointer link'>
+            <p className="hover:underline">
+              {session ? `Hello, ${session.user.name}` : "Sign in"}
+            </p>
             <p className='font-extrabold md:text-sm'>Accounts & Lists</p>
           </div>
 
-          <div className='relative link flex items-center'
-          >
+          <div onClick={() => router.push("/checkout")} className='relative link flex items-center'>
             <span className='absolute top-0 right-0 md:right-10 h-5 w-5 bg-yellow-400 rounded-full text-center text-black font-bold'>
               0
             </span>
